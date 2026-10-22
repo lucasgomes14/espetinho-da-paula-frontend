@@ -46,7 +46,7 @@ export function OrderForm() {
             .filter(([_, qty]) => qty > 0)
             .map(([productId, quantity]) => ({
                 productId: Number(productId),
-                quantity,
+                quantity: Number(quantity),
             }));
 
         if (itemsToSubmit.length === 0) {
@@ -55,21 +55,52 @@ export function OrderForm() {
         }
 
         setLoading(true);
+
         try {
-            const response = await fetch("https://espetinho-da-paula-backend.vercel.app/orders", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    tableId: Number(tableId),
-                    items: itemsToSubmit,
-                }),
-            });
+            const tableResponse = await fetch(
+                "https://espetinho-da-paula-backend.vercel.app/tables"
+            );
+            const tables = await tableResponse.json();
+            const currentTable = tables.find((t: any) => t.id === Number(tableId));
+            const activeOrderId = currentTable?.activeOrder?.id;
 
-            if (!response.ok) throw new Error("Erro ao abrir comanda.");
+            let response;
 
-            navigate("/tables");
-        } catch (error) {
-            alert("Erro ao processar a comanda. Tente novamente.");
+            if (activeOrderId) {
+                response = await fetch(
+                    `https://espetinho-da-paula-backend.vercel.app/orders/${activeOrderId}/items`,
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            items: itemsToSubmit, // <--- Aqui vai o array que o novo DTO do backend espera
+                        }),
+                    }
+                );
+            } else {
+                response = await fetch(
+                    "https://espetinho-da-paula-backend.vercel.app/orders",
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            tableId: Number(tableId),
+                            items: itemsToSubmit,
+                        }),
+                    }
+                );
+            }
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Erro ao salvar o pedido.");
+            }
+
+            alert("Pedido salvo com sucesso!");
+            navigate("/table");
+        } catch (error: any) {
+            console.error("Erro no envio do pedido:", error);
+            alert(error.message || "Erro ao processar a comanda. Tente novamente.");
         } finally {
             setLoading(false);
         }
@@ -90,7 +121,7 @@ export function OrderForm() {
 
     return (
         <div className="min-h-[100dvh] w-full bg-[#FFF7E2] flex flex-col items-center font-['Inter'] pt-24 px-4 pb-12">
-            <BackButton to={"/tables"} />
+            <BackButton to={"/table"} />
             <Title />
 
             <div className="w-full max-w-2xl mt-6 flex flex-col flex-1">
