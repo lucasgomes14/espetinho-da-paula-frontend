@@ -9,6 +9,7 @@ export function useKitchen() {
     const [loading, setLoading] = useState<boolean>(true);
     const [selectedItem, setSelectedItem] = useState<KitchenItem | null>(null);
 
+    // Carrega o histórico do localStorage
     const getDeliveredKeys = (): Set<string> => {
         try {
             const saved = localStorage.getItem(STORAGE_KEY);
@@ -18,6 +19,7 @@ export function useKitchen() {
         }
     };
 
+    // Salva ou remove do localStorage
     const saveDeliveredKey = (orderId: number, productName: string, isDelivered: boolean) => {
         try {
             const deliveredKeys = getDeliveredKeys();
@@ -44,6 +46,7 @@ export function useKitchen() {
 
             const productsList = productsRes.data || [];
 
+            // Mapeia os produtos da Categoria 3
             const acompanhamentoNames = new Set<string>(
                 productsList
                     .filter((p: any) => Number(p.category ?? p.categoryId) === 3)
@@ -52,11 +55,16 @@ export function useKitchen() {
 
             const deliveredKeys = getDeliveredKeys();
             const extractedItems: KitchenItem[] = [];
+            const activeOrderIds = new Set<number>();
 
             (ordersRes.data || []).forEach((order: any) => {
                 const status = (order.status ?? order.STATUS ?? "ACTIVE").toUpperCase();
 
+                // PONTO DE ATENÇÃO 2: Apenas comandas ABERTAS/ATIVAS aparecem na cozinha
                 if (status === "ACTIVE" || status === "OPEN") {
+                    const orderId = order.id ?? order.ID;
+                    activeOrderIds.add(orderId);
+
                     const orderItems = order.items ?? order.ITEMS ?? [];
 
                     orderItems.forEach((item: any) => {
@@ -64,7 +72,6 @@ export function useKitchen() {
                         const normalizedName = String(rawName).trim().toLowerCase();
 
                         if (acompanhamentoNames.has(normalizedName)) {
-                            const orderId = order.id ?? order.ID;
                             const itemKey = `${orderId}-${normalizedName}`;
 
                             const isDelivered = Boolean(item.delivered) || deliveredKeys.has(itemKey);
@@ -82,6 +89,16 @@ export function useKitchen() {
                 }
             });
 
+            // Limpeza de itens antigos do localStorage (se a comanda já foi FECHADA ou CANCELADA)
+            const updatedDeliveredKeys = new Set<string>();
+            deliveredKeys.forEach((key) => {
+                const orderId = Number(key.split("-")[0]);
+                if (activeOrderIds.has(orderId)) {
+                    updatedDeliveredKeys.add(key);
+                }
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(updatedDeliveredKeys)));
+
             setItems(extractedItems);
         } catch (error) {
             console.error("Erro ao carregar pedidos da cozinha:", error);
@@ -91,7 +108,15 @@ export function useKitchen() {
     };
 
     useEffect(() => {
+        // Busca imediata ao carregar a tela
         fetchKitchenOrders();
+
+        // PONTO DE ATENÇÃO 1: Atualiza automaticamente a cada 5 segundos (Polling)
+        const intervalId = setInterval(() => {
+            fetchKitchenOrders();
+        }, 5000);
+
+        return () => clearInterval(intervalId); // Limpa o timer ao desmontar o componente
     }, []);
 
     const handleToggleStatus = async (itemToUpdate: KitchenItem, newStatus: "PENDING" | "DELIVERED") => {
@@ -114,7 +139,7 @@ export function useKitchen() {
                 delivered: isDelivered,
             });
         } catch (error) {
-            console.warn("Backend não persistiu, mas o status foi mantido via localStorage.");
+            console.warn("Status mantido localmente.");
         }
     };
 
