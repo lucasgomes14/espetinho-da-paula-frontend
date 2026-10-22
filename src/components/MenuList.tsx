@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom"; // Importado o useNavigate
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Pencil, Trash2, X } from "lucide-react";
 
@@ -12,7 +12,7 @@ interface Product {
 }
 
 export function MenuList() {
-    const navigate = useNavigate(); // Instanciado o hook de navegação
+    const navigate = useNavigate();
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -25,7 +25,15 @@ export function MenuList() {
         setLoading(true);
         axios.get("https://espetinho-da-paula-backend.vercel.app/product")
             .then((response) => {
-                setProducts(response.data);
+                // Mapeamento dos campos vindos do Prisma/NestJS (ID, NAME, PRICE, CATEGORY_ID)
+                const formattedProducts: Product[] = response.data.map((item: any) => ({
+                    id: item.id ?? item.ID,
+                    name: item.name ?? item.NAME,
+                    price: Number(item.price ?? item.PRICE ?? 0),
+                    categoryId: item.categoryId ?? item.category ?? item.CATEGORY_ID,
+                }));
+
+                setProducts(formattedProducts);
                 setLoading(false);
             })
             .catch((err) => {
@@ -57,27 +65,32 @@ export function MenuList() {
     };
 
     const handleDeleteProduct = async (id: number) => {
+        if (!id) {
+            alert("Erro: ID do produto inválido.");
+            return;
+        }
+
         if (!confirm("Tem certeza que deseja apagar este produto?")) return;
 
         try {
             await axios.delete(`https://espetinho-da-paula-backend.vercel.app/product/${id}`);
-            alert("Produto removido com sucesso!");
+            alert("Produto inativado com sucesso!");
             setSelectedProduct(null);
             fetchProducts();
-        } catch (err) {
+        } catch (err: any) {
             console.error("Erro ao apagar produto:", err);
-            alert("Erro ao apagar produto. Tente novamente.");
+            const msg = err.response?.data?.message || "Erro ao apagar produto. Tente novamente.";
+            alert(msg);
         }
     };
 
-    // REDIRECIONA PARA A TELA DE EDIÇÃO PASSANDO O ID DO PRODUTO
     const handleEditProduct = (product: Product) => {
         setSelectedProduct(null);
-        navigate(`/EditProduct/${product.id}`);
+        navigate(`/edit-product/${product.id}`);
     };
 
     const sortAlphabetically = (itemA: Product, itemB: Product) => {
-        return itemA.name.localeCompare(itemB.name);
+        return (itemA.name || "").localeCompare(itemB.name || "");
     };
 
     const espetos = products

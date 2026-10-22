@@ -40,7 +40,7 @@ export function NewProduct() {
 
             if(response.ok) {
                 alert("Produto guardado com sucesso!");
-                navigate("/Menu");
+                navigate("/menu");
             } else {
                 console.error("O backend recusou os dados:", await response.text());
                 alert("Erro ao salvar! Verifique o console.");
@@ -54,7 +54,7 @@ export function NewProduct() {
     return (
         <div className="min-h-[100dvh] w-full bg-[#FFF7E2] flex flex-col items-center font-['Inter'] px-6 py-12 relative">
 
-            <BackButton to={"/Menu"} />
+            <BackButton to={"/menu"} />
 
             <header className="mb-10 text-center mt-6">
                 <h1 className="text-3xl md:text-4xl font-extrabold text-[#F88A49]">
