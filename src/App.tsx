@@ -5,6 +5,8 @@ import {Metrics} from "./pages/Metrics.tsx";
 import {Menu} from "./pages/Menu.tsx";
 import {Kitchen} from "./pages/Kitchen.tsx";
 import {OrderTicket} from "./pages/OrderTicket.tsx";
+import {NewProduct} from "./pages/NewProduct.tsx";
+import {EditProduct} from "./pages/EditProduct.tsx";
 
 function App() {
 
@@ -15,6 +17,8 @@ function App() {
       <Route path="/OrderTicket" element={<OrderTicket />} />
       <Route path="/Kitchen" element={<Kitchen />} />
       <Route path="/Menu" element={<Menu />} />
+      <Route path="/NewProduct" element={<NewProduct />} />
+      <Route path="/EditProduct/:id" element={<EditProduct />} />
       <Route path="/Metrics" element={<Metrics />} />
     </Routes>
   )
