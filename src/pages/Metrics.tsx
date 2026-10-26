@@ -62,14 +62,17 @@ export function Metrics() {
                 const monthsNames = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
                 monthsNames.forEach((m) => monthlyMap.set(m, 0));
 
-                orders.forEach((order) => {
-                    const status = String(order.status || "").toUpperCase();
-                    if (status !== "CLOSED") {
+                orders.forEach((order: any) => {
+                    const status = String(order.status || order.STATUS || "").toUpperCase();
+                    if (status !== "CLOSED" && status !== "FINISHED") {
                         return;
                     }
 
-                    const orderDate = new Date(order.createdAt);
-                    const orderTotal = Number(order.totalAmount || 0) || order.items.reduce((acc, item) => acc + (Number(item.price) * Number(item.quantity)), 0);
+                    const rawDate = order.createdAt ?? order.CREATED_AT;
+                    const orderDate = rawDate ? new Date(rawDate) : new Date();
+
+                    const orderItems = order.items ?? order.ITEMS ?? [];
+                    const orderTotal = Number(order.totalAmount ?? order.TOTAL_AMOUNT ?? 0) || orderItems.reduce((acc: number, item: any) => acc + (Number(item.price ?? item.PRICE ?? 0) * Number(item.quantity ?? item.QUANTITY ?? 0)), 0);
 
                     if (orderDate.getFullYear() === now.getFullYear()) {
                         yearTotal += orderTotal;
@@ -95,15 +98,17 @@ export function Metrics() {
                         }
                     }
 
-                    order.items.forEach((item) => {
-                        const rawName = item.productName || "Item";
-                        const normName = rawName.trim().toLowerCase();
+                    orderItems.forEach((item: any) => {
+                        const rawName = item.productName || item.name || "Item";
+                        const normName = String(rawName).trim().toLowerCase();
                         const category = productCategoryMap.get(normName) || "espeto";
+                        const itemQty = Number(item.quantity ?? item.QUANTITY ?? 1);
+                        const itemPrice = Number(item.price ?? item.PRICE ?? 0);
 
                         const current = statsMap.get(rawName) || { quantity: 0, revenue: 0, category };
                         statsMap.set(rawName, {
-                            quantity: current.quantity + Number(item.quantity),
-                            revenue: current.revenue + (Number(item.price) * Number(item.quantity)),
+                            quantity: current.quantity + itemQty,
+                            revenue: current.revenue + (itemPrice * itemQty),
                             category,
                         });
                     });

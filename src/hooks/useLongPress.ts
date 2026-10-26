@@ -15,7 +15,7 @@ export function useLongPress({ onLongPress, onClick, delay = 600 }: LongPressOpt
         }, delay);
     }, [onLongPress, delay]);
 
-    const clear = useCallback((e: React.SyntheticEvent) => {
+    const clear = useCallback(() => {
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
             timeoutRef.current = null;
