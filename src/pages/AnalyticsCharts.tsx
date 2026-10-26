@@ -9,7 +9,7 @@ export function AnalyticsCharts() {
     useEffect(() => {
         const fetchChartData = async () => {
             try {
-                const res = await axios.get(`${import.meta.env.VITE}/orders`).catch(() => ({ data: [] }));
+                const res = await axios.get(`${import.meta.env.VITE_API_URL}/orders`).catch(() => ({ data: [] }));
                 const orders = res.data || [];
 
                 const daysMap = new Map<string, number>();

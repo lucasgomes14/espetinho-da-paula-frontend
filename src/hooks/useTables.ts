@@ -20,7 +20,7 @@ export function useTables() {
 
     const fetchTables = useCallback(async () => {
         try {
-            const response = await fetch(`${import.meta.env.VITE}/tables`);
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/tables`);
             const data = await response.json();
             setTables(data);
         } catch (error) {
@@ -35,7 +35,7 @@ export function useTables() {
 
         async function load() {
             try {
-                const response = await fetch(`${import.meta.env.VITE}/tables`);
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/tables`);
                 const data = await response.json();
                 if (isMounted) setTables(data);
             } catch (error) {

@@ -25,8 +25,8 @@ export function Metrics() {
         const fetchMetrics = async () => {
             try {
                 const [ordersRes, productsRes] = await Promise.all([
-                    axios.get(`${import.meta.env.VITE}/orders`).catch(() => ({ data: [] })),
-                    axios.get(`${import.meta.env.VITE}/product`).catch(() => ({ data: [] })),
+                    axios.get(`${import.meta.env.VITE_API_URL}/orders`).catch(() => ({ data: [] })),
+                    axios.get(`${import.meta.env.VITE_API_URL}/product`).catch(() => ({ data: [] })),
                 ]);
 
                 const orders: Order[] = ordersRes.data || [];

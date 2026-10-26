@@ -14,7 +14,7 @@ export function OrderForm() {
     useEffect(() => {
         async function fetchProducts() {
             try {
-                const response = await fetch(`${import.meta.env.VITE}/product`);
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/product`);
                 const data = await response.json();
                 setProducts(data);
             } catch (error) {
@@ -52,7 +52,7 @@ export function OrderForm() {
 
         try {
             const tableResponse = await fetch(
-                `${import.meta.env.VITE}/tables`
+                `${import.meta.env.VITE_API_URL}/tables`
             );
             const tables = await tableResponse.json();
             const currentTable = tables.find((t: any) => t.id === Number(tableId));
@@ -62,7 +62,7 @@ export function OrderForm() {
 
             if (activeOrderId) {
                 response = await fetch(
-                    `${import.meta.env.VITE}/orders/${activeOrderId}/items`,
+                    `${import.meta.env.VITE_API_URL}/orders/${activeOrderId}/items`,
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -73,7 +73,7 @@ export function OrderForm() {
                 );
             } else {
                 response = await fetch(
-                    `${import.meta.env.VITE}/orders`,
+                    `${import.meta.env.VITE_API_URL}/orders`,
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },

@@ -13,7 +13,7 @@ export function OrderTicket() {
     useEffect(() => {
         async function fetchOrders() {
             try {
-                const response = await axios.get(`${import.meta.env.VITE}/orders`);
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/orders`);
 
                 const formattedOrders: Order[] = (response.data || []).map((order: any) => ({
                     id: order.id ?? order.ID,
@@ -47,7 +47,7 @@ export function OrderTicket() {
 
         try {
             const response = await axios.patch(
-                `${import.meta.env.VITE}/orders/${orderId}/close`
+                `${import.meta.env.VITE_API_URL}/orders/${orderId}/close`
             );
 
             if (response.status !== 200 && response.status !== 204) {

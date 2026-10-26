@@ -9,7 +9,7 @@ export function NewProduct() {
     const [categories, setCategories] = useState<Category[]>([]);
 
     useEffect(() => {
-        fetch(`${import.meta.env.VITE}/category`)
+        fetch(`${import.meta.env.VITE_API_URL}/category`)
             .then(res => res.json())
             .then(data => {
                 if (Array.isArray(data)) {
@@ -34,7 +34,7 @@ export function NewProduct() {
         productData.categoryId = parseInt(productData.categoryId);
 
         try {
-            const response = await fetch(`${import.meta.env.VITE}/product`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/product`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(productData)

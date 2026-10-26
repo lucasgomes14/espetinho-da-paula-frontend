@@ -38,8 +38,8 @@ export function useKitchen() {
     const fetchKitchenOrders = async () => {
         try {
             const [ordersRes, productsRes] = await Promise.all([
-                axios.get(`${import.meta.env.VITE}/orders`),
-                axios.get(`${import.meta.env.VITE}/product`).catch(() => ({ data: [] })),
+                axios.get(`${import.meta.env.VITE_API_URL}/orders`),
+                axios.get(`${import.meta.env.VITE_API_URL}/product`).catch(() => ({ data: [] })),
             ]);
 
             const productsList = productsRes.data || [];
@@ -127,7 +127,7 @@ export function useKitchen() {
         setSelectedItem(null);
 
         try {
-            await axios.patch(`${import.meta.env.VITE}/orders/${itemToUpdate.orderId}/items`, {
+            await axios.patch(`${import.meta.env.VITE_API_URL}/orders/${itemToUpdate.orderId}/items`, {
                 productName: itemToUpdate.productName,
                 delivered: isDelivered,
             });

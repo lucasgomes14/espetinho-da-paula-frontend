@@ -23,7 +23,7 @@ export function MenuList() {
 
     const fetchProducts = () => {
         setLoading(true);
-        axios.get(`${import.meta.env.VITE}/product`)
+        axios.get(`${import.meta.env.VITE_API_URL}/product`)
             .then((response) => {
                 const formattedProducts: Product[] = response.data.map((item: any) => ({
                     id: item.id ?? item.ID,
@@ -72,7 +72,7 @@ export function MenuList() {
         if (!confirm("Tem certeza que deseja apagar este produto?")) return;
 
         try {
-            await axios.delete(`${import.meta.env.VITE}/product/${id}`);
+            await axios.delete(`${import.meta.env.VITE_API_URL}/product/${id}`);
             alert("Produto inativado com sucesso!");
             setSelectedProduct(null);
             fetchProducts();
