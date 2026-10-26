@@ -19,7 +19,7 @@ export function MenuList() {
 
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-    const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const fetchProducts = () => {
         setLoading(true);

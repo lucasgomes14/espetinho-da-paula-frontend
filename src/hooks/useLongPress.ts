@@ -7,7 +7,7 @@ interface LongPressOptions {
 }
 
 export function useLongPress({ onLongPress, onClick, delay = 600 }: LongPressOptions) {
-    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const start = useCallback((e: React.SyntheticEvent) => {
         timeoutRef.current = setTimeout(() => {
