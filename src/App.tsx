@@ -8,6 +8,7 @@ import {OrderTicket} from "./pages/OrderTicket.tsx";
 import {NewProduct} from "./pages/NewProduct.tsx";
 import {EditProduct} from "./pages/EditProduct.tsx";
 import {OrderForm} from "./pages/OrderForm.tsx";
+import {Waiter} from "./pages/Waiter.tsx";
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/table" element={<Table />} />
       <Route path="/order-ticket" element={<OrderTicket />} />
+      <Route path="/waiter" element={<Waiter />} />
       <Route path="/kitchen" element={<Kitchen />} />
       <Route path="/menu" element={<Menu />} />
       <Route path="/new-product" element={<NewProduct />} />
