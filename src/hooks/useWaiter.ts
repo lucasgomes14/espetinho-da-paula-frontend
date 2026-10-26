@@ -38,8 +38,8 @@ export function useWaiter() {
     const fetchWaiterOrders = async () => {
         try {
             const [ordersRes, productsRes] = await Promise.all([
-                axios.get("https://espetinho-da-paula-backend.vercel.app/orders"),
-                axios.get("https://espetinho-da-paula-backend.vercel.app/product").catch(() => ({ data: [] })),
+                axios.get(`${import.meta.env.VITE_API_URL}/orders`),
+                axios.get(`${import.meta.env.VITE_API_URL}/product`).catch(() => ({ data: [] })),
             ]);
 
             const productsList = productsRes.data || [];
@@ -129,7 +129,7 @@ export function useWaiter() {
         setSelectedItem(null);
 
         try {
-            await axios.patch(`https://espetinho-da-paula-backend.vercel.app/orders/${itemToUpdate.orderId}/items`, {
+            await axios.patch(`${import.meta.env.VITE_API_URL}/orders/${itemToUpdate.orderId}/items`, {
                 productName: itemToUpdate.productName,
                 delivered: isDelivered,
             });

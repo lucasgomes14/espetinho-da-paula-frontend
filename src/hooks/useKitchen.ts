@@ -9,7 +9,6 @@ export function useKitchen() {
     const [loading, setLoading] = useState<boolean>(true);
     const [selectedItem, setSelectedItem] = useState<KitchenItem | null>(null);
 
-    // Carrega o histórico do localStorage
     const getDeliveredKeys = (): Set<string> => {
         try {
             const saved = localStorage.getItem(STORAGE_KEY);
@@ -19,7 +18,6 @@ export function useKitchen() {
         }
     };
 
-    // Salva ou remove do localStorage
     const saveDeliveredKey = (orderId: number, productName: string, isDelivered: boolean) => {
         try {
             const deliveredKeys = getDeliveredKeys();
@@ -40,13 +38,12 @@ export function useKitchen() {
     const fetchKitchenOrders = async () => {
         try {
             const [ordersRes, productsRes] = await Promise.all([
-                axios.get("https://espetinho-da-paula-backend.vercel.app/orders"),
-                axios.get("https://espetinho-da-paula-backend.vercel.app/product").catch(() => ({ data: [] })),
+                axios.get(`${import.meta.env.VITE_API_URL}/orders`),
+                axios.get(`${import.meta.env.VITE_API_URL}/product`).catch(() => ({ data: [] })),
             ]);
 
             const productsList = productsRes.data || [];
 
-            // Mapeia os produtos da Categoria 3
             const acompanhamentoNames = new Set<string>(
                 productsList
                     .filter((p: any) => Number(p.category ?? p.categoryId) === 3)
@@ -60,7 +57,6 @@ export function useKitchen() {
             (ordersRes.data || []).forEach((order: any) => {
                 const status = (order.status ?? order.STATUS ?? "ACTIVE").toUpperCase();
 
-                // PONTO DE ATENÇÃO 2: Apenas comandas ABERTAS/ATIVAS aparecem na cozinha
                 if (status === "ACTIVE" || status === "OPEN") {
                     const orderId = order.id ?? order.ID;
                     activeOrderIds.add(orderId);
@@ -89,7 +85,6 @@ export function useKitchen() {
                 }
             });
 
-            // Limpeza de itens antigos do localStorage (se a comanda já foi FECHADA ou CANCELADA)
             const updatedDeliveredKeys = new Set<string>();
             deliveredKeys.forEach((key) => {
                 const orderId = Number(key.split("-")[0]);
@@ -108,15 +103,13 @@ export function useKitchen() {
     };
 
     useEffect(() => {
-        // Busca imediata ao carregar a tela
         fetchKitchenOrders();
 
-        // PONTO DE ATENÇÃO 1: Atualiza automaticamente a cada 5 segundos (Polling)
         const intervalId = setInterval(() => {
             fetchKitchenOrders();
         }, 5000);
 
-        return () => clearInterval(intervalId); // Limpa o timer ao desmontar o componente
+        return () => clearInterval(intervalId);
     }, []);
 
     const handleToggleStatus = async (itemToUpdate: KitchenItem, newStatus: "PENDING" | "DELIVERED") => {
@@ -134,7 +127,7 @@ export function useKitchen() {
         setSelectedItem(null);
 
         try {
-            await axios.patch(`https://espetinho-da-paula-backend.vercel.app/orders/${itemToUpdate.orderId}/items`, {
+            await axios.patch(`${import.meta.env.VITE_API_URL}/orders/${itemToUpdate.orderId}/items`, {
                 productName: itemToUpdate.productName,
                 delivered: isDelivered,
             });

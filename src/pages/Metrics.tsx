@@ -25,8 +25,8 @@ export function Metrics() {
         const fetchMetrics = async () => {
             try {
                 const [ordersRes, productsRes] = await Promise.all([
-                    axios.get("https://espetinho-da-paula-backend.vercel.app/orders").catch(() => ({ data: [] })),
-                    axios.get("https://espetinho-da-paula-backend.vercel.app/product").catch(() => ({ data: [] })),
+                    axios.get(`${import.meta.env.VITE_API_URL}/orders`).catch(() => ({ data: [] })),
+                    axios.get(`${import.meta.env.VITE_API_URL}/product`).catch(() => ({ data: [] })),
                 ]);
 
                 const orders: Order[] = ordersRes.data || [];
