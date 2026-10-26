@@ -14,7 +14,7 @@ export function OrderForm() {
     useEffect(() => {
         async function fetchProducts() {
             try {
-                const response = await fetch("https://espetinho-da-paula-backend.vercel.app/product");
+                const response = await fetch(`${import.meta.env.VITE}/product`);
                 const data = await response.json();
                 setProducts(data);
             } catch (error) {
@@ -52,7 +52,7 @@ export function OrderForm() {
 
         try {
             const tableResponse = await fetch(
-                "https://espetinho-da-paula-backend.vercel.app/tables"
+                `${import.meta.env.VITE}/tables`
             );
             const tables = await tableResponse.json();
             const currentTable = tables.find((t: any) => t.id === Number(tableId));
@@ -62,18 +62,18 @@ export function OrderForm() {
 
             if (activeOrderId) {
                 response = await fetch(
-                    `https://espetinho-da-paula-backend.vercel.app/orders/${activeOrderId}/items`,
+                    `${import.meta.env.VITE}/orders/${activeOrderId}/items`,
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
-                            items: itemsToSubmit, // <--- Aqui vai o array que o novo DTO do backend espera
+                            items: itemsToSubmit,
                         }),
                     }
                 );
             } else {
                 response = await fetch(
-                    "https://espetinho-da-paula-backend.vercel.app/orders",
+                    `${import.meta.env.VITE}/orders`,
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },

@@ -23,9 +23,8 @@ export function MenuList() {
 
     const fetchProducts = () => {
         setLoading(true);
-        axios.get("https://espetinho-da-paula-backend.vercel.app/product")
+        axios.get(`${import.meta.env.VITE}/product`)
             .then((response) => {
-                // Mapeamento dos campos vindos do Prisma/NestJS (ID, NAME, PRICE, CATEGORY_ID)
                 const formattedProducts: Product[] = response.data.map((item: any) => ({
                     id: item.id ?? item.ID,
                     name: item.name ?? item.NAME,
@@ -73,7 +72,7 @@ export function MenuList() {
         if (!confirm("Tem certeza que deseja apagar este produto?")) return;
 
         try {
-            await axios.delete(`https://espetinho-da-paula-backend.vercel.app/product/${id}`);
+            await axios.delete(`${import.meta.env.VITE}/product/${id}`);
             alert("Produto inativado com sucesso!");
             setSelectedProduct(null);
             fetchProducts();

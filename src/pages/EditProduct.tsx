@@ -14,7 +14,7 @@ export function EditProduct() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch("https://espetinho-da-paula-backend.vercel.app/category")
+        fetch(`${import.meta.env.VITE}/category`)
             .then(res => res.json())
             .then(data => {
                 if (Array.isArray(data)) {
@@ -28,7 +28,7 @@ export function EditProduct() {
             .catch(error => console.error("Erro ao buscar categorias:", error));
 
         if (id) {
-            fetch(`https://espetinho-da-paula-backend.vercel.app/product/${id}`)
+            fetch(`${import.meta.env.VITE}/product/${id}`)
                 .then(res => res.json())
                 .then(product => {
                     setName(product.name || "");
@@ -54,7 +54,7 @@ export function EditProduct() {
         };
 
         try {
-            const response = await fetch(`https://espetinho-da-paula-backend.vercel.app/product/${id}`, {
+            const response = await fetch(`${import.meta.env.VITE}/product/${id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(productData)

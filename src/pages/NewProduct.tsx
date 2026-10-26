@@ -9,7 +9,7 @@ export function NewProduct() {
     const [categories, setCategories] = useState<Category[]>([]);
 
     useEffect(() => {
-        fetch("https://espetinho-da-paula-backend.vercel.app/category")
+        fetch(`${import.meta.env.VITE}/category`)
             .then(res => res.json())
             .then(data => {
                 if (Array.isArray(data)) {
@@ -34,7 +34,7 @@ export function NewProduct() {
         productData.categoryId = parseInt(productData.categoryId);
 
         try {
-            const response = await fetch("https://espetinho-da-paula-backend.vercel.app/product", {
+            const response = await fetch(`${import.meta.env.VITE}/product`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(productData)
