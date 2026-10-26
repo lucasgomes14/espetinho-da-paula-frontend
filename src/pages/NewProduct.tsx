@@ -1,10 +1,12 @@
-import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {BackButton} from "../components/BackButton.tsx";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { BackButton } from "../components/BackButton.tsx";
+import type {Category} from "../types/Category.ts";
+
 
 export function NewProduct() {
     const navigate = useNavigate();
-    const [categories, setCategories] = useState([]);
+    const [categories, setCategories] = useState<Category[]>([]);
 
     useEffect(() => {
         fetch("https://espetinho-da-paula-backend.vercel.app/category")
@@ -22,11 +24,11 @@ export function NewProduct() {
             .catch(error => console.error("Erro ao buscar categorias:", error));
     }, []);
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        const formData = new FormData(event.target);
-        const productData = Object.fromEntries(formData);
+        const formData = new FormData(event.currentTarget);
+        const productData: Record<string, any> = Object.fromEntries(formData);
 
         productData.price = parseFloat(productData.price);
         productData.categoryId = parseInt(productData.categoryId);
@@ -40,7 +42,7 @@ export function NewProduct() {
 
             if(response.ok) {
                 alert("Produto guardado com sucesso!");
-                navigate("/Menu");
+                navigate("/menu");
             } else {
                 console.error("O backend recusou os dados:", await response.text());
                 alert("Erro ao salvar! Verifique o console.");
@@ -54,7 +56,7 @@ export function NewProduct() {
     return (
         <div className="min-h-[100dvh] w-full bg-[#FFF7E2] flex flex-col items-center font-['Inter'] px-6 py-12 relative">
 
-            <BackButton to={"/Menu"} />
+            <BackButton to={"/menu"} />
 
             <header className="mb-10 text-center mt-6">
                 <h1 className="text-3xl md:text-4xl font-extrabold text-[#F88A49]">
@@ -102,9 +104,10 @@ export function NewProduct() {
                         id="category"
                         name="categoryId"
                         required
+                        defaultValue=""
                         className="p-3.5 rounded-2xl bg-[#FFF7E2]/60 border border-[#FCBC71] text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#F88A49] focus:border-transparent transition-all cursor-pointer"
                     >
-                        <option value="" disabled selected>Selecione uma categoria...</option>
+                        <option value="" disabled>Selecione uma categoria...</option>
                         {categories && categories.length > 0 && categories.map((cat) => (
                             <option key={cat.id} value={cat.id}>
                                 {cat.name}

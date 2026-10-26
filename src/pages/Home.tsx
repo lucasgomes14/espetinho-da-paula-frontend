@@ -9,11 +9,11 @@ export function Home() {
 
             <main className="mt-32">
                 <div className="grid grid-cols-2 gap-8">
-                    <MenuButton to="/Table" title="Mesas" icon={<LayoutGrid size={24} /> } />
-                    <MenuButton to="/OrderTicket" title="Comanda" icon={<SquareMenu size={24} /> } />
-                    <MenuButton to="/Kitchen" title="Cozinha" icon={<Coffee size={24} /> } />
-                    <MenuButton to="/Menu" title="Cardápio" icon={<BookOpenText size={24} /> } />
-                    <MenuButton to="/Metrics" title="Métricas" icon={<ChartNoAxesCombined size={24} /> } />
+                    <MenuButton to="/table" title="Mesas" icon={<LayoutGrid size={24} /> } />
+                    <MenuButton to="/order-ticket" title="Comanda" icon={<SquareMenu size={24} /> } />
+                    <MenuButton to="/kitchen" title="Cozinha" icon={<Coffee size={24} /> } />
+                    <MenuButton to="/menu" title="Cardápio" icon={<BookOpenText size={24} /> } />
+                    <MenuButton to="/metrics" title="Métricas" icon={<ChartNoAxesCombined size={24} /> } />
                 </div>
             </main>
         </div>

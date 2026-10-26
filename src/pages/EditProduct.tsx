@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { BackButton } from "../components/BackButton.tsx";
-
-interface Category {
-    id: number;
-    name: string;
-}
+import { type Category } from "../types/Category.ts";
 
 export function EditProduct() {
     const navigate = useNavigate();
@@ -66,7 +62,7 @@ export function EditProduct() {
 
             if (response.ok) {
                 alert("Produto atualizado com sucesso!");
-                navigate("/Menu");
+                navigate("/menu");
             } else {
                 console.error("O backend recusou a atualização:", await response.text());
                 alert("Erro ao atualizar produto!");
@@ -88,7 +84,7 @@ export function EditProduct() {
     return (
         <div className="min-h-[100dvh] w-full bg-[#FFF7E2] flex flex-col items-center font-['Inter'] px-6 py-12 relative">
 
-            <BackButton to={"/Menu"} />
+            <BackButton to={"/menu"} />
 
             <header className="mb-10 text-center mt-6">
                 <h1 className="text-3xl md:text-4xl font-extrabold text-[#F88A49]">

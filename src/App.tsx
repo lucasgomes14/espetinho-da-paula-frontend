@@ -7,19 +7,21 @@ import {Kitchen} from "./pages/Kitchen.tsx";
 import {OrderTicket} from "./pages/OrderTicket.tsx";
 import {NewProduct} from "./pages/NewProduct.tsx";
 import {EditProduct} from "./pages/EditProduct.tsx";
+import {OrderForm} from "./pages/OrderForm.tsx";
 
 function App() {
 
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/Table" element={<Table />} />
-      <Route path="/OrderTicket" element={<OrderTicket />} />
-      <Route path="/Kitchen" element={<Kitchen />} />
-      <Route path="/Menu" element={<Menu />} />
-      <Route path="/NewProduct" element={<NewProduct />} />
-      <Route path="/EditProduct/:id" element={<EditProduct />} />
-      <Route path="/Metrics" element={<Metrics />} />
+      <Route path="/table" element={<Table />} />
+      <Route path="/order-ticket" element={<OrderTicket />} />
+      <Route path="/kitchen" element={<Kitchen />} />
+      <Route path="/menu" element={<Menu />} />
+      <Route path="/new-product" element={<NewProduct />} />
+      <Route path="/edit-product/:id" element={<EditProduct />} />
+      <Route path="/metrics" element={<Metrics />} />
+      <Route path="/tables/:tableId/order" element={<OrderForm />} />
     </Routes>
   )
 }
