@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { BackButton } from "../components/BackButton.tsx";
-
-interface Category {
-    id: number;
-    name: string;
-}
+import { type Category } from "../types/Category.ts";
 
 export function EditProduct() {
     const navigate = useNavigate();

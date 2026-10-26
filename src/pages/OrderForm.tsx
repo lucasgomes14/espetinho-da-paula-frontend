@@ -2,13 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { BackButton } from "../components/BackButton.tsx";
 import { Title } from "../components/Title.tsx";
-
-interface Product {
-    id: number;
-    name: string;
-    price: number;
-    category?: string;
-}
+import { type Product } from "../types/Product.ts";
 
 export function OrderForm() {
     const { tableId } = useParams();

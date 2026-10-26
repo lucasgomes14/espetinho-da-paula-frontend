@@ -2,21 +2,8 @@ import { useEffect, useState } from "react";
 import { BackButton } from "../components/BackButton.tsx";
 import axios from "axios";
 import { Printer, X, Clock, CheckCircle2, XCircle } from "lucide-react";
-
-interface OrderItem {
-    productName: string;
-    quantity: number;
-    price: number;
-}
-
-interface Order {
-    id: number;
-    tableNumber: number;
-    status: string;
-    totalAmount: number;
-    items: OrderItem[];
-    createdAt?: string;
-}
+import { type Order } from "../types/Order.ts";
+import { type OrderItem } from "../types/OrderItem.ts";
 
 export function OrderTicket() {
     const [orders, setOrders] = useState<Order[]>([]);
