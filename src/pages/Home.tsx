@@ -7,7 +7,7 @@ export function Home() {
         <div className="min-h-[100dvh] w-full bg-[#FFF7E2] flex flex-col items-center font-['Inter'] pt-32">
             <Title />
 
-            <main className="mt-32">
+            <main className="mt-32 mb-16">
                 <div className="grid grid-cols-2 gap-8">
                     <MenuButton to="/table" title="Mesas" icon={<LayoutGrid size={24} /> } />
                     <MenuButton to="/order-ticket" title="Comanda" icon={<SquareMenu size={24} /> } />
