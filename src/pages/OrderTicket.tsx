@@ -4,11 +4,15 @@ import axios from "axios";
 import { Printer, X, Clock, CheckCircle2, XCircle } from "lucide-react";
 import { type Order } from "../types/Order.ts";
 import { type OrderItem } from "../types/OrderItem.ts";
+import { BleClient } from "@capacitor-community/bluetooth-le";
 
 export function OrderTicket() {
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+
+    // Substitua pelo endereço MAC ou ID da sua impressora térmica Bluetooth configurada
+    const PRINTER_DEVICE_ID = "44:cb:ad:b2:b0:c9";
 
     useEffect(() => {
         async function fetchOrders() {
@@ -72,8 +76,61 @@ export function OrderTicket() {
     const closedOrders = orders.filter((o) => o.status === "CLOSED" || o.status === "FINISHED");
     const cancelledOrders = orders.filter((o) => o.status === "CANCELLED");
 
-    const handlePrint = () => {
-        window.print();
+    // Função de Impressão via Bluetooth (ESC/POS)
+    const handlePrint = async () => {
+        if (!selectedOrder) return;
+
+        try {
+            await BleClient.initialize();
+
+            // Se preferir escanear e selecionar a impressora na hora, pode usar BleClient.requestDevice()
+            // Ou conectar diretamente pelo endereço salvo:
+            await BleClient.connect(PRINTER_DEVICE_ID);
+
+            // Comandos ESC/POS básicos para formatação de texto térmico
+            const ESC = "\x1B";
+            const CENTER = "\x1B\x61\x01";
+            const LEFT = "\x1B\x61\x00";
+            const BOLD_ON = "\x45\x01";
+            const BOLD_OFF = "\x45\x00";
+
+            let rawText = "";
+            rawText += CENTER + BOLD_ON + "ESPETINHO DA PAULA\n" + BOLD_OFF;
+            rawText += `Comanda - Mesa ${selectedOrder.tableNumber || selectedOrder.id}\n`;
+            rawText += "--------------------------------\n";
+            rawText += LEFT;
+            rawText += "QTD  ITEM                 TOTAL\n";
+            rawText += "--------------------------------\n";
+
+            getGroupedItems(selectedOrder.items).forEach((item) => {
+                const itemTotal = (item.price * item.quantity).toFixed(2);
+                rawText += `${item.quantity}x   ${item.productName.padEnd(16, " ")} R$ ${itemTotal}\n`;
+            });
+
+            rawText += "--------------------------------\n";
+            rawText += CENTER + BOLD_ON + `VALOR FINAL: R$ ${Number(selectedOrder.totalAmount || 0).toFixed(2)}\n` + BOLD_OFF;
+            rawText += "\n\n\n"; // Espaço para corte de papel
+
+            const encoder = new TextEncoder();
+            const data = encoder.encode(rawText);
+
+            // UUID padrão de comunicação serial Bluetooth para impressoras térmicas
+            const SERVICE_UUID = "00001101-0000-1000-8000-00805f9b34fb";
+            const CHARACTERISTIC_UUID = "00001101-0000-1000-8000-00805f9b34fb";
+
+            await BleClient.write(
+                PRINTER_DEVICE_ID,
+                SERVICE_UUID,
+                CHARACTERISTIC_UUID,
+                data
+            );
+
+            await BleClient.disconnect(PRINTER_DEVICE_ID);
+            alert("Comanda impressa com sucesso!");
+        } catch (error) {
+            console.error("Erro ao imprimir via Bluetooth:", error);
+            alert("Falha ao conectar ou enviar dados para a impressora Bluetooth.");
+        }
     };
 
     const getGroupedItems = (items: OrderItem[] = []) => {
